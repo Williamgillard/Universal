@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+  <head>
+    {{ partial "headers.html" . }}
+    {{ partial "custom_headers.html" . }}
+  </head>
+
+  <body>
+
+    <div id="all">
+
+        {{ partial "top.html" . }}
+
+        {{ partial "nav.html" . }}
+
+        {{ partial "breadcrumbs.html" . }}
+
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+			<div class="col-md-12">
+			<h2>{{ .Params.subtitle }}</h2>
+			</div>
+		</div>
+		<div class="row">
+
+                    <!-- *** LEFT COLUMN *** -->
+
+                    <div class="col-md-8" id="blog-post">
+
+                        <div id="post-content">
+                          {{ .Content }}
+                        </div>
+                        <!-- /#post-content -->
+
+                    </div>
+                    <!-- /#blog-post -->
+
+                    <!-- *** LEFT COLUMN END *** -->
+
+                    <!-- *** RIGHT COLUMN *** -->
+
+                    <div class="col-md-4">
+
+                        <!-- *** MENUS AND WIDGETS *** -->
+
+			<!-- *** CONTACT INFO (ONLY FOR CONTACT PAGE) *** -->
+			{{ if .Params.show_contact_info }}
+			<img src="{{ .Params.image | relURL }}"
+     				alt="{{ .Params.Alt | default "About image" }}"
+     class="img-fluid"
+     style="max-height: 300px; object-fit: cover;">
+			<div class="d-none d-md-block" style="height: 70px;"></div>
+			<div class="margin-top: 100px; background: red;">
+				{{ if .Params.show_hours }}
+        			{{ if isset .Site.Params "hours" }}
+					<div class="widget">
+          					<h4>Hours</h4>
+      						{{ .Site.Params.hours | safeHTML }}
+  					</div>
+				{{ end }}
+        			{{ end }}
+				{{ if .Params.show_address }}
+        			{{ if isset .Site.Params "address" }}
+        				<div class="widget">
+          					<h4>{{ i18n "contactTitle" }}</h4>
+            					{{ .Site.Params.address | safeHTML }}
+        				</div>
+        			{{ end }}
+				{{ end }}
+			</div>
+			{{ end }}
+
+
+                        <!-- *** MENUS AND FILTERS END *** -->
+
+                    </div>
+                    <!-- /.col-md-3 -->
+			<div class="row">
+				<div class="col-md-8">
+        			{{ if isset .Site.Params "google_maps" }}
+					<div class="widget">
+      						{{ .Site.Params.google_maps | safeHTML }}
+  					</div>
+				{{ end }}	
+				</div>
+				<div class="col-md-4">
+				{{ if .Params.show_calendar }}
+        			{{ if isset .Site.Params "calendar_list" }}
+					<div class="widget">
+      						{{ .Site.Params.calendar_list | safeHTML }}
+  					</div>
+				{{ end }}
+        			{{ end }}
+				</div>
+			</div>
+
+                    <!-- *** RIGHT COLUMN END *** -->
+
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /#content -->
+
+        {{ partial "footer.html" . }}
+
+    </div>
+    <!-- /#all -->
+
+    {{ partial "scripts.html" . }}
+
+  </body>
+</html>

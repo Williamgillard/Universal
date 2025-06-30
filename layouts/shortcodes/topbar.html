@@ -1,0 +1,5 @@
+{{ range .Site.Menus.topbar.ByWeight }}
+  <a href="{{ .URL }}">
+    {{ .Pre | safeHTML }}
+  </a>
+{{ end }}

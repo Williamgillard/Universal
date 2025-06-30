@@ -1,0 +1,5 @@
+{{ with site.Params.google_calendar }}
+  {{ . | safeHTML }}
+{{ else }}
+  <p><em>Calendar not available.</em></p>
+{{ end }}
