@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+  <head>
+    {{ partial "headers.html" . }}
+    {{ partial "custom_headers.html" . }}
+  </head>
+
+  <body>
+
+    <div id="all">
+
+        {{ partial "top.html" . }}
+
+        {{ partial "nav.html" . }}
+
+        {{ partial "breadcrumbs.html" . }}
+
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-md-12" id="products-listing">
+
+                        <header class="section-products-header">
+                          <h1>{{ .Title }}</h1>
+                          {{ with .Params.subtitle }}
+                            <p class="lead">{{ . }}</p>
+                          {{ end }}
+                        </header>
+
+                        {{/* Collect categories and diets from pages for filters */}}
+                        {{ $categories := slice }}
+                        {{ $diets := slice }}
+                        {{ range .Pages }}
+                          {{ with .Params.category }}
+                            {{ $categories = $categories | append . }}
+                          {{ end }}
+                          {{ with .Params.diets }}
+                            {{ range . }}
+                              {{ $diets = $diets | append . }}
+                            {{ end }}
+                          {{ end }}
+                        {{ end }}
+                        {{ $categories = $categories | uniq | sort }}
+                        {{ $diets = $diets | uniq | sort }}
+
+                        <div class="products-filters">
+                          <div class="products-filters__group">
+                            <span class="products-filters__label">Type</span>
+                            <button class="products-filters__pill is-active" data-filter-category="all">All</button>
+                            {{ range $categories }}
+                              <button class="products-filters__pill" data-filter-category="{{ . | urlize }}">{{ . }}</button>
+                            {{ end }}
+                          </div>
+
+                          {{ if gt (len $diets) 0 }}
+                          <div class="products-filters__group">
+                            <span class="products-filters__label">Diet</span>
+                            <button class="products-filters__pill is-active" data-filter-diet="all">All</button>
+                            {{ range $diets }}
+                              <button class="products-filters__pill" data-filter-diet="{{ . | urlize }}">{{ . }}</button>
+                            {{ end }}
+                          </div>
+                          {{ end }}
+                        </div>
+
+                        {{ $pages := .Pages.ByWeight }}
+
+                        <div class="product-mosaic-grid">
+                          {{ range $index, $p := $pages }}
+                            {{ $category := $p.Params.category | default "" }}
+                            {{ $dietsForCard := $p.Params.diets | default (slice) }}
+                            {{ $size := cond (and (eq $index 0) (or (eq $p.Params.highlight true) (eq $p.Params.highlight "true"))) "feature" "standard" }}
+                            <article class="product-card-v2 product-card-v2--{{ $size }}"
+                              data-category="{{ $category | urlize }}"
+                              data-diets="{{ delimit (apply $dietsForCard "urlize" "." ) "," }}">
+
+                              <a href="{{ $p.RelPermalink }}" class="product-card-v2__link">
+                                <div class="product-card-v2__image-wrapper">
+                                  {{ with $p.Params.image }}
+                                    <img src="{{ . | relURL }}" alt="{{ $p.Title }}" class="product-card-v2__image" loading="lazy">
+                                  {{ else }}
+                                    <div class="product-card-v2__placeholder"></div>
+                                  {{ end }}
+                                </div>
+
+                                <div class="product-card-v2__content">
+                                  <h2 class="product-card-v2__title">{{ $p.Title }}</h2>
+
+                                  <div class="product-card-v2__meta">
+                                    {{ with $p.Params.category }}
+                                      <span class="product-card-v2__badge">{{ . }}</span>
+                                    {{ end }}
+                                    {{ with $p.Params.diets }}
+                                      {{ range . }}
+                                        <span class="product-card-v2__badge product-card-v2__badge--muted">{{ . }}</span>
+                                      {{ end }}
+                                    {{ end }}
+                                  </div>
+
+                                  {{ with $p.Params.price_display }}
+                                    <div class="product-card-v2__price">{{ . }}</div>
+                                  {{ end }}
+
+                                  {{ with $p.Params.summary }}
+                                    <p class="product-card-v2__summary">{{ . }}</p>
+                                  {{ else }}
+                                    {{ with $p.Summary }}
+                                      <p class="product-card-v2__summary">{{ . }}</p>
+                                    {{ end }}
+                                  {{ end }}
+                                </div>
+                              </a>
+                            </article>
+                          {{ end }}
+                        </div>
+
+                        {{ partial "contact-cta.html" . }}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {{ partial "footer.html" . }}
+
+    </div>
+
+    {{ partial "scripts.html" . }}
+
+    <style>
+    .section-products-header {
+      margin-bottom: 24px;
+    }
+
+    .section-products-header h1 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .products-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .products-filters__group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .products-filters__label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777;
+    }
+
+    .products-filters__pill {
+      border: none;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 0.9rem;
+      background: #f0f0f0;
+      color: #444;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .products-filters__pill.is-active {
+      background: #555;
+      color: #fff;
+    }
+
+    .products-filters__pill:hover {
+      background: #ddd;
+    }
+
+    .product-mosaic-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: 220px;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 991px) {
+      .product-mosaic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 210px;
+      }
+    }
+
+    @media (max-width: 575px) {
+      .product-mosaic-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-auto-rows: 220px;
+      }
+    }
+
+    .product-card-v2 {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      background: #fff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product-card-v2--feature {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    @media (max-width: 991px) {
+      .product-card-v2--feature {
+        grid-column: span 2;
+        grid-row: span 1;
+      }
+    }
+
+    @media (max-width: 575px) {
+      .product-card-v2--feature {
+        grid-column: span 1;
+        grid-row: span 1;
+      }
+    }
+
+    .product-card-v2:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-card-v2__link {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .product-card-v2__image-wrapper {
+      flex: 1 1 auto;
+      position: relative;
+      background: #f3f3f3;
+    }
+
+    .product-card-v2__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-card-v2__placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #f3f3f3 0%, #e4e4e4 100%);
+    }
+
+    .product-card-v2__content {
+      padding: 12px 14px 14px;
+    }
+
+    .product-card-v2__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 6px;
+    }
+
+    .product-card-v2__meta {
+      margin-bottom: 4px;
+    }
+
+    .product-card-v2__badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f5f5f5;
+      color: #555;
+      margin-right: 4px;
+      margin-bottom: 3px;
+    }
+
+    .product-card-v2__badge--muted {
+      background: #f0f0f0;
+      color: #777;
+    }
+
+    .product-card-v2__price {
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    .product-card-v2__summary {
+      font-size: 0.87rem;
+      color: #666;
+      margin-bottom: 0;
+    }
+    </style>
+
+    <script>
+    (function () {
+      var categoryButtons = document.querySelectorAll('[data-filter-category]');
+      var dietButtons = document.querySelectorAll('[data-filter-diet]');
+      var cards = document.querySelectorAll('.product-card-v2');
+
+      function getActiveValue(buttons, attr) {
+        for (var i = 0; i < buttons.length; i++) {
+          if (buttons[i].classList.contains('is-active')) {
+            return buttons[i].getAttribute(attr);
+          }
+        }
+        return 'all';
+      }
+
+      function applyFilters() {
+        var activeCategory = getActiveValue(categoryButtons, 'data-filter-category');
+        var activeDiet = getActiveValue(dietButtons, 'data-filter-diet');
+
+        cards.forEach ? cards.forEach(filterCard) : Array.prototype.forEach.call(cards, filterCard);
+
+        function filterCard(card) {
+          var cardCategory = (card.getAttribute('data-category') || '').toLowerCase();
+          var cardDiets = (card.getAttribute('data-diets') || '').toLowerCase().split(',');
+
+          var categoryMatch = (activeCategory === 'all') || (cardCategory === activeCategory);
+          var dietMatch = (activeDiet === 'all') || (cardDiets.indexOf(activeDiet) !== -1);
+
+          if (categoryMatch && dietMatch) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        }
+      }
+
+      function setActive(buttons, clicked) {
+        buttons.forEach ? buttons.forEach(clear) : Array.prototype.forEach.call(buttons, clear);
+        function clear(btn) { btn.classList.remove('is-active'); }
+        clicked.classList.add('is-active');
+        applyFilters();
+      }
+
+      categoryButtons.forEach ? categoryButtons.forEach(addCategoryListener) : Array.prototype.forEach.call(categoryButtons, addCategoryListener);
+      dietButtons.forEach ? dietButtons.forEach(addDietListener) : Array.prototype.forEach.call(dietButtons, addDietListener);
+
+      function addCategoryListener(btn) {
+        btn.addEventListener('click', function () {
+          setActive(categoryButtons, btn);
+        });
+      }
+
+      function addDietListener(btn) {
+        btn.addEventListener('click', function () {
+          setActive(dietButtons, btn);
+        });
+      }
+
+      applyFilters();
+    })();
+    </script>
+
+  </body>
+</html>
+

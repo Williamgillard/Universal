@@ -1,0 +1,120 @@
+{{/* Reusable contact CTA panel
+
+Expected params in config.toml:
+
+[params]
+  contact_url = "/contact"            # primary CTA target (optional, defaults to /contact)
+  phone = "+1 (555) 555-5555"         # optional, shows a Call link when set
+  email = "hello@example.com"         # optional, shows an Email link when set
+  instagram = "https://instagram.com" # optional, shows an Instagram link when set
+
+This partial is safe to include on any page: if values are missing, the
+corresponding links are simply omitted.
+*/}}
+
+{{ $contactURL := .Site.Params.contact_url | default "/contact" }}
+
+<section class="section-contact-cta">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-7">
+        <h2 class="section-contact-cta__title">
+          {{ with .Params.cta_title }}{{ . }}{{ else }}{{ i18n "contactUs" | default "Let’s talk about your menu" }}{{ end }}
+        </h2>
+        <p class="section-contact-cta__subtitle">
+          {{ with .Params.cta_subtitle }}
+            {{ . }}
+          {{ else }}
+            {{ i18n "contactUsSubtitle" | default "Tell us a bit about your event, and we’ll follow up with ideas and next steps." }}
+          {{ end }}
+        </p>
+      </div>
+      <div class="col-md-5 text-md-right text-center section-contact-cta__actions">
+        <a href="{{ $contactURL | relURL }}" class="btn btn-template-main btn-lg section-contact-cta__primary">
+          {{ with .Params.cta_button_label }}{{ . }}{{ else }}{{ i18n "contactUsCta" | default "Contact us" }}{{ end }}
+        </a>
+
+        <div class="section-contact-cta__secondary">
+          {{ with .Site.Params.phone }}
+            <a href="tel:{{ . }}" class="section-contact-cta__link">{{ . }}</a>
+          {{ end }}
+          {{ with .Site.Params.email }}
+            <a href="mailto:{{ . }}" class="section-contact-cta__link">{{ . }}</a>
+          {{ end }}
+          {{ with .Site.Params.instagram }}
+            <a href="{{ . }}" class="section-contact-cta__link" target="_blank" rel="noopener">
+              Instagram
+            </a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.section-contact-cta {
+  padding: 40px 0;
+  margin: 40px 0 0;
+  background: #f7f7f7;
+  border-radius: 12px;
+}
+
+@media (min-width: 992px) {
+  .section-contact-cta {
+    padding: 48px 40px;
+  }
+}
+
+.section-contact-cta__title {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.section-contact-cta__subtitle {
+  margin-bottom: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.section-contact-cta__actions {
+  margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .section-contact-cta__actions {
+    margin-top: 0;
+  }
+}
+
+.section-contact-cta__primary {
+  margin-bottom: 8px;
+}
+
+.section-contact-cta__secondary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 16px;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .section-contact-cta__secondary {
+    justify-content: flex-end;
+  }
+}
+
+.section-contact-cta__link {
+  color: #666;
+  text-decoration: none;
+}
+
+.section-contact-cta__link:hover {
+  color: #333;
+  text-decoration: underline;
+}
+</style>
+

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+  <head>
+    {{ partial "headers.html" . }}
+    {{ partial "custom_headers.html" . }}
+  </head>
+
+  <body>
+
+    <div id="all">
+
+        {{ partial "top.html" . }}
+
+        {{ partial "nav.html" . }}
+
+        {{ partial "breadcrumbs.html" . }}
+
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="col-md-8 col-md-offset-2" id="product-detail">
+
+                        <article class="product-detail-card">
+                          {{ with .Params.image }}
+                          <div class="product-detail-card__image-wrapper">
+                            <img src="{{ . | relURL }}" alt="{{ $.Title }}" class="img-responsive product-detail-card__image">
+                          </div>
+                          {{ end }}
+
+                          <header class="product-detail-card__header">
+                            <h1 class="product-detail-card__title">{{ .Title }}</h1>
+
+                            <div class="product-detail-card__meta">
+                              {{ with .Params.category }}
+                                <span class="product-detail-card__badge">{{ . }}</span>
+                              {{ end }}
+
+                              {{ with .Params.diets }}
+                                {{ range . }}
+                                  <span class="product-detail-card__badge product-detail-card__badge--muted">{{ . }}</span>
+                                {{ end }}
+                              {{ end }}
+                            </div>
+
+                            <div class="product-detail-card__info">
+                              {{ with .Params.price_display }}
+                                <span class="product-detail-card__price">{{ . }}</span>
+                              {{ end }}
+                              {{ with .Params.serves }}
+                                <span class="product-detail-card__meta-item">Serves {{ . }}</span>
+                              {{ end }}
+                            </div>
+                          </header>
+
+                          <div class="product-detail-card__body" id="post-content">
+                            {{ .Content }}
+                          </div>
+
+                          {{ with .Params.allergens }}
+                            <div class="product-detail-card__allergens">
+                              <strong>Allergens:</strong> {{ . }}
+                            </div>
+                          {{ end }}
+
+                          {{ if or .Params.square_url .Params.square_item_id }}
+                            <div class="product-detail-card__square">
+                              {{ with .Params.square_url }}
+                                <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-default btn-sm">
+                                  View item on Square
+                                </a>
+                              {{ else }}
+                                {{ with .Params.square_item_id }}
+                                  <p class="text-muted">
+                                    Square item ID: <code>{{ . }}</code>
+                                  </p>
+                                {{ end }}
+                              {{ end }}
+                            </div>
+                          {{ end }}
+                        </article>
+
+                        {{ partial "contact-cta.html" . }}
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        {{ partial "footer.html" . }}
+
+    </div>
+
+    {{ partial "scripts.html" . }}
+
+    <style>
+    .product-detail-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .product-detail-card__image-wrapper {
+      max-height: 420px;
+      overflow: hidden;
+    }
+
+    .product-detail-card__image {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .product-detail-card__header {
+      padding: 20px 22px 8px;
+    }
+
+    .product-detail-card__title {
+      margin: 0 0 10px;
+      font-weight: 700;
+    }
+
+    .product-detail-card__meta {
+      margin-bottom: 6px;
+    }
+
+    .product-detail-card__badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f5f5f5;
+      color: #555;
+      margin-right: 4px;
+      margin-bottom: 3px;
+    }
+
+    .product-detail-card__badge--muted {
+      background: #f0f0f0;
+      color: #777;
+    }
+
+    .product-detail-card__info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      align-items: center;
+      padding: 0 22px 12px;
+    }
+
+    .product-detail-card__price {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .product-detail-card__meta-item {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .product-detail-card__body {
+      padding: 0 22px 18px;
+    }
+
+    .product-detail-card__allergens {
+      padding: 0 22px 18px;
+      border-top: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .product-detail-card__square {
+      padding: 0 22px 20px;
+      border-top: 1px solid #f0f0f0;
+    }
+    </style>
+
+  </body>
+</html>
+
