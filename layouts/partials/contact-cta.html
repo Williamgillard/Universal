@@ -10,14 +10,15 @@ Expected params in config.toml:
 
 This partial is safe to include on any page: if values are missing, the
 corresponding links are simply omitted.
+Uses Font Awesome (fas/fab) for phone, envelope, and Instagram to match the header.
 */}}
 
 {{ $contactURL := .Site.Params.contact_url | default "/contact" }}
 
 <section class="section-contact-cta">
   <div class="container">
-    <div class="row align-items-center">
-      <div class="col-md-7">
+    <div class="section-contact-cta__inner">
+      <div class="section-contact-cta__copy">
         <h2 class="section-contact-cta__title">
           {{ with .Params.cta_title }}{{ . }}{{ else }}{{ i18n "contactUs" | default "Let’s talk about your menu" }}{{ end }}
         </h2>
@@ -29,21 +30,27 @@ corresponding links are simply omitted.
           {{ end }}
         </p>
       </div>
-      <div class="col-md-5 text-md-right text-center section-contact-cta__actions">
+      <div class="section-contact-cta__actions">
         <a href="{{ $contactURL | relURL }}" class="btn btn-template-main btn-lg section-contact-cta__primary">
           {{ with .Params.cta_button_label }}{{ . }}{{ else }}{{ i18n "contactUsCta" | default "Contact us" }}{{ end }}
         </a>
-
-        <div class="section-contact-cta__secondary">
+        <div class="section-contact-cta__links">
           {{ with .Site.Params.phone }}
-            <a href="tel:{{ . }}" class="section-contact-cta__link">{{ . }}</a>
+            <a href="tel:{{ . }}" class="section-contact-cta__link" aria-label="Call us">
+              <i class="fas fa-phone" aria-hidden="true"></i>
+              <span class="section-contact-cta__link-text">{{ . }}</span>
+            </a>
           {{ end }}
           {{ with .Site.Params.email }}
-            <a href="mailto:{{ . }}" class="section-contact-cta__link">{{ . }}</a>
+            <a href="mailto:{{ . }}" class="section-contact-cta__link" aria-label="Email us">
+              <i class="fas fa-envelope" aria-hidden="true"></i>
+              <span class="section-contact-cta__link-text">{{ . }}</span>
+            </a>
           {{ end }}
           {{ with .Site.Params.instagram }}
-            <a href="{{ . }}" class="section-contact-cta__link" target="_blank" rel="noopener">
-              Instagram
+            <a href="{{ . }}" class="section-contact-cta__link" target="_blank" rel="noopener" aria-label="Instagram">
+              <i class="fab fa-instagram" aria-hidden="true"></i>
+              <span class="section-contact-cta__link-text">Instagram</span>
             </a>
           {{ end }}
         </div>
@@ -54,22 +61,30 @@ corresponding links are simply omitted.
 
 <style>
 .section-contact-cta {
-  padding: 40px 0;
+  padding: 32px 0;
   margin: 40px 0 0;
   background: #f7f7f7;
   border-radius: 12px;
 }
 
-@media (min-width: 992px) {
-  .section-contact-cta {
-    padding: 48px 40px;
-  }
+.section-contact-cta__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px 32px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.section-contact-cta__copy {
+  flex: 1 1 280px;
+  min-width: 0;
 }
 
 .section-contact-cta__title {
   margin-top: 0;
   margin-bottom: 10px;
-  font-size: 1.9rem;
+  font-size: 1.6rem;
   font-weight: 700;
 }
 
@@ -77,44 +92,74 @@ corresponding links are simply omitted.
   margin-bottom: 0;
   font-size: 1rem;
   color: #666;
+  line-height: 1.5;
 }
 
 .section-contact-cta__actions {
-  margin-top: 20px;
-}
-
-@media (min-width: 768px) {
-  .section-contact-cta__actions {
-    margin-top: 0;
-  }
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .section-contact-cta__primary {
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  white-space: nowrap;
 }
 
-.section-contact-cta__secondary {
+.section-contact-cta__links {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 16px;
+  align-items: center;
+  gap: 12px 20px;
   font-size: 0.9rem;
 }
 
-@media (min-width: 768px) {
-  .section-contact-cta__secondary {
-    justify-content: flex-end;
-  }
-}
-
 .section-contact-cta__link {
-  color: #666;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
   text-decoration: none;
+  min-width: 0;
 }
 
 .section-contact-cta__link:hover {
   color: #333;
-  text-decoration: underline;
+  text-decoration: none;
+}
+
+.section-contact-cta__link i {
+  flex-shrink: 0;
+  font-size: 1.1em;
+}
+
+.section-contact-cta__link-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .section-contact-cta__inner {
+    flex-direction: column;
+  }
+
+  .section-contact-cta__actions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .section-contact-cta__primary {
+    text-align: center;
+  }
+
+  .section-contact-cta__links {
+    justify-content: flex-start;
+  }
 }
 </style>
 
