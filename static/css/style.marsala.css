@@ -8,6 +8,7 @@
   --pagination-bg: #d2adad;
   --link-hover-bg: #74403f;
   --navbar-focus: #c08c8c;
+  --topbar-bg: #6b3a3a;
 }
 
 .clearfix:before,
@@ -243,7 +244,7 @@ ul.list-style-none {
   }
 }
 #top {
-  background: #555555;
+  background: var(--topbar-bg, #555555);
   color: #eeeeee;
   padding: 10px 0;
 }

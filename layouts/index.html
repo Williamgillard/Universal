@@ -14,17 +14,17 @@
 
         {{ partial "nav.html" . }}
 
-        {{ partial "carousel.html" . }}
-
-        {{ partial "features.html" . }}
-
-        {{ partial "testimonials.html" . }}
-
-        {{ partial "see_more.html" . }}
-
-        {{ partial "recent_posts.html" . }}
-
-        {{ partial "clients.html" . }}
+        {{ $sections := default (slice "carousel" "features" "testimonials" "see_more" "recent_posts" "clients") .Site.Params.homepage_sections }}
+        {{ $ctx := . }}
+        {{ range $sections }}
+          {{ if eq . "carousel" }}{{ partial "carousel.html" $ctx }}{{ end }}
+          {{ if eq . "features" }}{{ partial "features.html" $ctx }}{{ end }}
+          {{ if eq . "testimonials" }}{{ partial "testimonials.html" $ctx }}{{ end }}
+          {{ if eq . "see_more" }}{{ partial "see_more.html" $ctx }}{{ end }}
+          {{ if eq . "recent_posts" }}{{ partial "recent_posts.html" $ctx }}{{ end }}
+          {{ if eq . "clients" }}{{ partial "clients.html" $ctx }}{{ end }}
+          {{ if eq . "initiatives" }}{{ partial "initiatives.html" $ctx }}{{ end }}
+        {{ end }}
 
         {{ partial "footer.html" . }}
 

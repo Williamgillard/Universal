@@ -1,89 +1,121 @@
 <footer id="footer">
-    <div class="container">
+  <div class="container">
+    <div class="row">
 
-        {{ if isset .Site.Params "about_us" }}
-        <div class="col-md-4 col-sm-6">
-            <h4>{{ i18n "aboutUs" }}</h4>
+      {{ $showAbout := and (isset .Site.Params "about_us") (ne (default true (index .Site.Params.footer "about_enable")) false) }}
+      {{ if $showAbout }}
+      <div class="col-md-4 col-sm-6 footer-block">
+        <h4>{{ i18n "aboutUs" }}</h4>
+        {{ .Site.Params.about_us | safeHTML }}
+        <hr class="hidden-md hidden-lg hidden-sm">
+      </div>
+      {{ end }}
 
-            {{ .Site.Params.about_us | safeHTML }}
-
-            <hr class="hidden-md hidden-lg hidden-sm">
-
-        </div>
-        <!-- /.col-md-4 -->
-        {{ end }}
-
-        <div class="col-md-4 col-sm-6">
-
-            {{ if isset .Site.Params "recent_posts" }}{{ if (default true .Site.Params.footer.recent_posts.enable) }}
-            <h4>{{ i18n "recentPosts" }}</h4>
-
-            <div class="blog-entries">
-                {{ range first 3 (where .Site.RegularPages "Type" "in" .Site.Params.mainSections) }}
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
-                        <a href="{{ .Permalink }}">
-                          {{ if isset .Params "banner" }}
-                            <img src="{{ .Params.banner | relURL }}" class="img-responsive" alt="{{ .Title }}" />
-                          {{ else }}
-                            <img src="{{ "img/placeholder.png" | relURL }}" class="img-responsive" alt="{{ .Title }}" />
-                          {{ end }}
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="{{ .Permalink }}">{{ .Title }}</a></h5>
-                    </div>
-                </div>
+      {{ $showRecentPosts := false }}
+      {{ if isset .Site.Params "recent_posts" }}
+        {{ $rp := index .Site.Params.footer "recent_posts" }}
+        {{ $showRecentPosts = default true (index $rp "enable") }}
+      {{ end }}
+      {{ if $showRecentPosts }}
+      <div class="col-md-4 col-sm-6 footer-block">
+        <h4>{{ i18n "recentPosts" }}</h4>
+        <div class="blog-entries">
+          {{ range first 3 (where .Site.RegularPages "Type" "in" .Site.Params.mainSections) }}
+          <div class="item same-height-row clearfix">
+            <div class="image same-height-always">
+              <a href="{{ .Permalink }}">
+                {{ if isset .Params "banner" }}
+                  <img src="{{ .Params.banner | relURL }}" class="img-responsive" alt="{{ .Title }}" />
+                {{ else }}
+                  <img src="{{ "img/placeholder.png" | relURL }}" class="img-responsive" alt="{{ .Title }}" />
                 {{ end }}
+              </a>
             </div>
-
-            <hr class="hidden-md hidden-lg">
-            {{ end }}{{ end }}
-
+            <div class="name same-height-always">
+              <h5><a href="{{ .Permalink }}">{{ .Title }}</a></h5>
+            </div>
+          </div>
+          {{ end }}
         </div>
-        <!-- /.col-md-4 -->
+        <hr class="hidden-md hidden-lg">
+      </div>
+      {{ end }}
 
-        {{ if isset .Site.Params "address" }}
-        <div class="col-md-4 col-sm-6">
+      {{ $showAddress := and (isset .Site.Params "address") (ne (default true (index .Site.Params.footer "address_enable")) false) }}
+      {{ if $showAddress }}
+      <div class="col-md-4 col-sm-6 footer-block">
+        <h4>{{ i18n "contactTitle" }}</h4>
+        {{ .Site.Params.address | safeHTML }}
+        <a href="{{ default "/contact" .Site.Params.contact_url }}" class="btn btn-small btn-template-main">{{ i18n "contactGoTo" }}</a>
+        <hr class="hidden-md hidden-lg hidden-sm">
+      </div>
+      {{ end }}
 
-          <h4>{{ i18n "contactTitle" }}</h4>
+      {{ if default false (index .Site.Params.footer "newsletter_enable") }}
+      <div class="col-md-4 col-sm-6 footer-block footer-newsletter">
+        <h4>{{ default "Newsletter" (index .Site.Params.footer "newsletter_title") }}</h4>
+        <p class="footer-newsletter__text">{{ default "Subscribe for updates." (index .Site.Params.footer "newsletter_text") }}</p>
+        <form class="footer-newsletter__form" action="#" method="post" role="form">
+          <div class="input-group">
+            <input type="email" class="form-control" placeholder="{{ default "Your email" (index .Site.Params.footer "newsletter_placeholder") }}" aria-label="Email">
+            <span class="input-group-btn">
+              <button class="btn btn-template-main" type="submit">{{ default "Subscribe" (index .Site.Params.footer "newsletter_button") }}</button>
+            </span>
+          </div>
+        </form>
+        <hr class="hidden-md hidden-lg hidden-sm">
+      </div>
+      {{ end }}
 
-            {{ .Site.Params.address | safeHTML }}
+      {{ $showHours := and (isset .Site.Params "hours") (default false (index .Site.Params.footer "hours_enable")) }}
+      {{ if $showHours }}
+      <div class="col-md-4 col-sm-6 footer-block">
+        <h4>{{ default "Hours" (index .Site.Params.footer "hours_title") }}</h4>
+        {{ .Site.Params.hours | safeHTML }}
+        <hr class="hidden-md hidden-lg hidden-sm">
+      </div>
+      {{ end }}
 
-	    <a href="{{ default "/contact" .Site.Params.contact_url }}" class="btn btn-small btn-template-main">{{ i18n "contactGoTo" }}</a>
-
-            <hr class="hidden-md hidden-lg hidden-sm">
-
+      {{ $showSocial := default false (index .Site.Params.footer "social_enable") }}
+      {{ $footerMenu := default .Site.Menus.topbar .Site.Menus.footer }}
+      {{ if and $showSocial $footerMenu }}
+      <div class="col-md-4 col-sm-6 footer-block footer-social">
+        <h4>{{ default "Follow us" (index .Site.Params.footer "social_title") }}</h4>
+        <div class="social">
+          {{ range $footerMenu.ByWeight }}
+          <a href="{{ .URL | safeURL }}" target="_blank" rel="noopener" aria-label="{{ .Name }}">{{ .Pre | safeHTML }}</a>
+          {{ end }}
         </div>
-        <!-- /.col-md-4 -->
-        {{ end }}
+        <hr class="hidden-md hidden-lg hidden-sm">
+      </div>
+      {{ end }}
 
     </div>
-    <!-- /.container -->
+  </div>
 </footer>
 
-<!-- /#footer -->
-
-<!-- *** FOOTER END *** -->
-
-<!-- *** COPYRIGHT ***
-_________________________________________________________ -->
-
+<!-- *** COPYRIGHT *** -->
 <div id="copyright">
-    <div class="container">
-        <div class="col-md-12">
-            {{ if isset .Site.Params "copyright" }}
-            <p class="pull-left">{{ .Site.Params.copyright | safeHTML }}</p>
-            {{ end }}
-            <p class="pull-right">
-              {{ i18n "templateBy" | markdownify }} <a href="https://bootstrapious.com/universal-business-e-commerce-template">Bootstrapious</a>.
-              <!-- Not removing this link is part of the licence conditions of the template. Thanks for understanding :) -->
-
-              {{ i18n "portedBy" | markdownify }} <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
-            </p>
-        </div>
+  <div class="container">
+    <div class="col-md-12">
+      {{ $showCopyright := or (isset .Site.Params "copyright") (not (eq (default true (index .Site.Params.footer "copyright_enable")) false)) }}
+      {{ if $showCopyright }}
+      <p class="pull-left">
+        {{ with .Site.Params.copyright }}{{ . | safeHTML }}{{ end }}
+      </p>
+      {{ end }}
+      {{ if default false (index .Site.Params.footer "legal_enable") }}
+      <p class="pull-right footer-legal">
+        {{ range $i, $link := (index .Site.Params.footer "legal_links") }}
+          {{ if $i }} &middot; {{ end }}<a href="{{ $link.url }}">{{ $link.name }}</a>
+        {{ end }}
+      </p>
+      {{ else }}
+      <p class="pull-right">
+        {{ i18n "templateBy" | markdownify }} <a href="https://bootstrapious.com/universal-business-e-commerce-template">Bootstrapious</a>.
+        {{ i18n "portedBy" | markdownify }} <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+      </p>
+      {{ end }}
     </div>
+  </div>
 </div>
-<!-- /#copyright -->
-
-<!-- *** COPYRIGHT END *** -->

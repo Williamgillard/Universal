@@ -132,6 +132,16 @@ function sliders () {
         // animationsSlider()
       }
     })
+
+    $('.initiatives-carousel').owlCarousel({
+      singleItem: true,
+      autoPlay: false,
+      navigation: true,
+      navigationText: ['<i class="fas fa-angle-left"></i>', '<i class="fas fa-angle-right"></i>'],
+      pagination: true,
+      slideSpeed: 400,
+      paginationSpeed: 400
+    })
   }
 }
 

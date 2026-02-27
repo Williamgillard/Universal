@@ -143,6 +143,12 @@
             </div>
             <!--/.nav-collapse -->
 
+            <div class="navbar-phone visible-xs visible-sm">
+              {{ with .Site.Params.phone }}
+                <a href="tel:{{ . }}" class="navbar-phone__link">{{ . }}</a>
+              {{ end }}
+            </div>
+
             <div class="collapse clearfix" id="search">
                 <form class="navbar-form" role="search">
                     <div class="input-group">

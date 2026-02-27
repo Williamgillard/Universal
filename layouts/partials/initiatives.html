@@ -1,0 +1,47 @@
+{{ if default false .Site.Params.initiatives.enable }}
+  {{ $list := .Site.Data.initiatives }}
+  {{ if and $list (reflect.IsSlice $list) (gt (len $list) 0) }}
+  <section class="section-initiatives">
+    <div class="container">
+      {{ with .Site.Params.initiatives.title }}
+        <h2 class="section-initiatives__heading">{{ . }}</h2>
+      {{ end }}
+      {{ with .Site.Params.initiatives.subtitle }}
+        <p class="section-initiatives__subtitle">{{ . }}</p>
+      {{ end }}
+      <div class="initiatives-carousel owl-carousel" data-autoplay="false" data-items="1" data-single-item="true">
+        {{ range sort $list "weight" }}
+        {{ $item := . }}
+        <div class="initiatives-carousel__item">
+          {{ with .image }}
+            <div class="initiatives-carousel__image">
+              <img src="{{ . | relURL }}" alt="{{ $item.title }}" class="img-responsive">
+            </div>
+          {{ end }}
+          <div class="initiatives-carousel__content">
+            <h3 class="initiatives-carousel__title">{{ .title }}</h3>
+            {{ with .description }}
+              <div class="initiatives-carousel__description">{{ . | markdownify }}</div>
+            {{ end }}
+            {{ with .link_url }}
+              <a href="{{ . }}" class="btn btn-template-main initiatives-carousel__cta">{{ default "Learn more" $item.link_text }}</a>
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+  <style>
+  .section-initiatives { padding: 50px 0; }
+  .section-initiatives__heading { margin-bottom: 8px; }
+  .section-initiatives__subtitle { margin-bottom: 24px; color: #666; }
+  .initiatives-carousel__item { padding: 20px 0; }
+  .initiatives-carousel__image { margin-bottom: 16px; }
+  .initiatives-carousel__image img { width: 100%; max-height: 280px; object-fit: cover; }
+  .initiatives-carousel__title { margin: 0 0 12px; font-size: 1.5rem; }
+  .initiatives-carousel__description { margin-bottom: 16px; line-height: 1.6; }
+  .initiatives-carousel__cta { margin-top: 8px; }
+  </style>
+  {{ end }}
+{{ end }}

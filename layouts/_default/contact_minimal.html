@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+  <head>
+    {{ partial "headers.html" . }}
+    {{ partial "custom_headers.html" . }}
+  </head>
+  <body>
+    <div id="all">
+      {{ partial "top.html" . }}
+      {{ partial "nav.html" . }}
+      {{ partial "breadcrumbs.html" . }}
+      <div id="content">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              {{ with .Title }}<h1 class="contact-page__title">{{ . }}</h1>{{ end }}
+              {{ with .Params.subtitle }}<p class="contact-page__subtitle">{{ . }}</p>{{ end }}
+              <div id="post-content" class="contact-page__body">{{ .Content }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{ partial "footer.html" . }}
+    </div>
+    {{ partial "scripts.html" . }}
+    <style>
+    .contact-page__title { margin-top: 0; margin-bottom: 8px; }
+    .contact-page__subtitle { color: #666; margin-bottom: 20px; }
+    </style>
+  </body>
+</html>

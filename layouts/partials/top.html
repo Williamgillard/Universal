@@ -1,15 +1,29 @@
 {{ if .Site.Params.topbar.enable }}
 <header>
-  <div id="top">
+  <div id="top" class="topbar">
     <div class="container">
       <div class="row">
-        <div class="col-xs-5">
-          {{ .Site.Params.topbar.text | safeHTML }}
+        <div class="col-xs-6 col-sm-5">
+          {{ $showAnnouncement := or (eq true .Site.Params.topbar.announcement_enable) (and (not (isset .Site.Params.topbar "announcement_enable")) .Site.Params.topbar.text) }}
+          {{ if $showAnnouncement }}
+            {{ with .Site.Params.topbar.text }}
+              <div class="topbar__announcement">{{ . | safeHTML }}</div>
+            {{ end }}
+          {{ end }}
         </div>
-        <div class="col-xs-7">
-          <div class="social">
-            {{ range .Site.Menus.topbar.ByWeight }}
-            <a href="{{ .URL | safeURL }}" target="_blank" style="opacity: 1;">{{ .Pre }}</a>
+        <div class="col-xs-6 col-sm-7">
+          <div class="topbar__right">
+            {{ with .Site.Params.phone }}
+              <a href="tel:{{ . }}" class="topbar__phone">{{ . }}</a>
+            {{ end }}
+            {{ if default true .Site.Params.topbar.social_enable }}
+              {{ if .Site.Menus.topbar }}
+                <div class="social topbar__social">
+                  {{ range .Site.Menus.topbar.ByWeight }}
+                    <a href="{{ .URL | safeURL }}" target="_blank" rel="noopener" aria-label="{{ .Name }}">{{ .Pre | safeHTML }}</a>
+                  {{ end }}
+                </div>
+              {{ end }}
             {{ end }}
           </div>
         </div>
